@@ -1,0 +1,31 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Connect to your Times Frame",
+        "description": "Enter the frame's IP address and Divoom DeviceID. The DeviceID returned by this IP must match before setup can continue.",
+        "data": {
+          "host": "IP address",
+          "device_id": "Divoom DeviceID",
+          "port": "Port (default: 9000)"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Could not connect to the device at that IP and port.",
+      "device_id_mismatch": "The responding device did not report the configured DeviceID. Setup was rejected.",
+      "invalid_response": "The device returned an invalid response and its identity could not be verified.",
+      "device_error": "The device rejected the identity check."
+    },
+    "abort": {
+      "already_configured": "This Divoom DeviceID is already configured."
+    }
+  },
+  "entity": {
+    "light": {
+      "display": {
+        "name": "Display"
+      }
+    }
+  }
+}

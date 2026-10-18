@@ -1,0 +1,31 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Conectar con Times Frame",
+        "description": "Introduce la IP del marco y su DeviceID de Divoom. El ID devuelto por esa IP debe coincidir para continuar.",
+        "data": {
+          "host": "Dirección IP",
+          "device_id": "DeviceID de Divoom",
+          "port": "Puerto (predeterminado: 9000)"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "No se pudo conectar con el dispositivo en esa IP y puerto.",
+      "device_id_mismatch": "El dispositivo no devolvió el DeviceID configurado. Se rechazó el alta.",
+      "invalid_response": "El dispositivo devolvió una respuesta no válida y no se pudo verificar su identidad.",
+      "device_error": "El dispositivo rechazó la verificación de identidad."
+    },
+    "abort": {
+      "already_configured": "Este DeviceID de Divoom ya está configurado."
+    }
+  },
+  "entity": {
+    "light": {
+      "display": {
+        "name": "Pantalla"
+      }
+    }
+  }
+}
