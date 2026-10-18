@@ -1,25 +1,39 @@
+# Python bytecode and caches
 __pycache__/
 *.py[cod]
 *$py.class
-build/
-dist/
-*.egg-info/
 .pytest_cache/
-.venv/
-.tox/
-.nox/
-.coverage
-.coverage.*
 .hypothesis/
 .mypy_cache/
 .dmypy.json
 .pyre/
 .pytype/
 .ruff_cache/
-env/
+
+# Test and coverage output
+.tox/
+.nox/
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+
+# Build and packaging output
+build/
+dist/
+*.egg
+*.egg-info/
+*.manifest
+*.spec
+
+# Virtual environments and local environment files
+.venv/
 venv/
+env/
 ENV/
 .env
 .envrc
-htmlcov/
-docs/_build/
+
+# Editor and tool state
+.idea/
+.vscode/
