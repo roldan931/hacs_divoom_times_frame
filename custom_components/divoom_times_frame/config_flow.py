@@ -37,7 +37,7 @@ def _validate_device_id(value: str) -> str:
         raise vol.Invalid("Enter the numeric Divoom DeviceID") from err
 
 
-class DivoomTimesFrameConfigFlow(
+class ConfigFlow(
     config_entries.ConfigFlow,
     domain=DOMAIN,
 ):
