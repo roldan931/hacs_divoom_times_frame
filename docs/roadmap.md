@@ -20,6 +20,14 @@ La verificación actual es una comprobación de identidad funcional, no autentic
 
 La API local conocida usa `http://<ip>:9000/divoom_api` con un cuerpo JSON que contiene `Command`. La pantalla usa comandos separados para consultar estado, modificar brillo y encender/apagar. Mantener el transporte en `api.py` permite ajustar método, ruta o respuestas de firmware en un único lugar.
 
+## Red y firewall
+
+Durante la puesta en marcha, el alta falló con «Could not connect to the device at that IP and port» porque el firewall bloqueaba la comunicación. Al diagnosticar errores de conexión, tener presente esta causa además de la IP o el puerto incorrectos.
+
+Para que funcione, permitir tráfico TCP saliente desde Home Assistant hacia la IP del Times Frame en el puerto local configurado (por defecto, `9000`). Si Home Assistant o el marco están en una VLAN o red de invitados, comprobar también las reglas de aislamiento entre redes. No es necesario abrir el puerto del Times Frame a Internet ni permitir conexiones entrantes desde Internet.
+
+Verificar la conectividad desde el mismo host o contenedor de Home Assistant, no solo desde un portátil en la misma LAN. Por ejemplo, probar el endpoint con una solicitud HTTP que envíe `{"Command":"Channel/GetClockInfo"}` a `http://<ip-del-marco>:9000/divoom_api`. Si la conexión agota el tiempo o es rechazada, revisar el firewall del host, router y reglas entre VLAN; si hay respuesta HTTP pero falla la configuración, revisar el DeviceID y el contenido devuelto.
+
 ## Cómo añadir una característica
 
 1. **Verificar el protocolo** para el modelo y firmware de Times Frame; distinguir el API local del API cloud y documentar el comando y el esquema de respuesta observados.
@@ -42,6 +50,7 @@ La prioridad debe fijarse según comandos confirmados en Times Frame, no solo po
 ## Criterios de diseño
 
 - Reutilizar el cliente y el coordinador por dispositivo; no duplicar transporte ni sondeo por entidad sin necesidad.
+- Al diagnosticar `cannot_connect`, comprobar firewall, aislamiento de VLAN y acceso TCP de Home Assistant a la IP/puerto local del dispositivo.
 - Evitar iniciar sesión o hacer llamadas cloud desde la ruta local de control.
 - No registrar contraseñas, tokens ni cuerpos sensibles de solicitudes.
 - No ocultar errores de red, respuestas con error o estados imposibles; exponer indisponibilidad a Home Assistant.

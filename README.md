@@ -77,13 +77,13 @@ El DeviceID se conserva como identificador estable del dispositivo en Home Assis
 
 La integración se comunica con `http://<ip-del-marco>:9000/divoom_api` mediante solicitudes `GET` con un cuerpo JSON, que es el formato observado para el API local del Times Frame. Los comandos implementados actualmente consultan el estado, cambian el brillo y encienden o apagan la pantalla.
 
-La API local observada usa HTTP sin autenticación. La comprobación del DeviceID permite detectar una IP mal configurada o que responda otro Times Frame, pero **no es una credencial ni una prueba criptográfica de identidad**. Mantén el marco en una red local de confianza y no expongas su puerto directamente a Internet.
+La API local observada usa HTTP sin autenticación. La comprobación del DeviceID permite detectar una IP mal configurada o que responda otro Times Frame, pero **no es una credencial ni una prueba criptográfica de identidad**. Mantén el marco en una red local de confianza y no expongas su puerto directamente a Internet. El firewall debe permitir tráfico TCP saliente desde Home Assistant hacia la IP del marco en el puerto `9000` (o el puerto configurado); no hace falta abrirlo a Internet.
 
 La compatibilidad depende del modelo y del firmware. Si el dispositivo no devuelve el DeviceID en `Channel/GetClockInfo`, la integración falla de forma cerrada; no continúa sin verificar la identidad.
 
 ## Problemas frecuentes
 
-- **No se puede conectar:** confirma que Home Assistant y el marco están en la misma red, que la IP es correcta y que el puerto configurado corresponde al API local (por defecto, `9000`).
+- **No se puede conectar:** confirma que Home Assistant y el marco pueden comunicarse, que la IP es correcta y que el puerto configurado corresponde al API local (por defecto, `9000`). Revisa el firewall del host/router y las reglas de aislamiento entre VLAN o redes de invitados: debe permitirse TCP desde Home Assistant hacia el marco. Prueba el endpoint desde el propio host o terminal de Home Assistant; una prueba desde otro equipo no confirma que Home Assistant tenga acceso.
 - **El DeviceID no coincide o no se recibió:** comprueba el ID del Times Frame y que la IP apunta al marco esperado. El alta no se permite sin esta comprobación.
 - **La entidad no aparece como `switch`:** es lo esperado; el control se crea como `light` para poder incluir el brillo. Su nombre visible es **Pantalla**.
 
