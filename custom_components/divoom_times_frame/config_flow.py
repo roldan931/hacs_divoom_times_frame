@@ -19,22 +19,13 @@ from .const import DEFAULT_PORT, DOMAIN
 from .helpers import normalize_device_id, validate_ip_address
 
 CONF_DEVICE_ID = "device_id"
-
-
-def _validate_ip(value: str) -> str:
-    """Validate and normalize an IP address for the config form."""
-    try:
-        return validate_ip_address(value)
-    except ValueError as err:
-        raise vol.Invalid("Enter a valid IP address") from err
-
-
-def _validate_device_id(value: str) -> str:
-    """Validate the numeric Divoom cloud DeviceID."""
-    try:
-        return normalize_device_id(value)
-    except ValueError as err:
-        raise vol.Invalid("Enter the numeric Divoom DeviceID") from err
+STEP_USER_SCHEMA = vol.Schema(
+    {
+        vol.Required(CONF_HOST): str,
+        vol.Required(CONF_DEVICE_ID): str,
+        vol.Optional(CONF_PORT, default=DEFAULT_PORT): int,
+    }
+)
 
 
 class ConfigFlow(
@@ -50,11 +41,36 @@ class ConfigFlow(
         user_input: dict[str, str | int] | None = None,
     ) -> FlowResult:
         """Ask for the device's IP, DeviceID, and optional port."""
-        errors: dict[str, str] = {}
         if user_input is not None:
-            host = validate_ip_address(str(user_input[CONF_HOST]))
-            device_id = normalize_device_id(str(user_input[CONF_DEVICE_ID]))
-            port = int(user_input.get(CONF_PORT, DEFAULT_PORT))
+            try:
+                host = validate_ip_address(str(user_input[CONF_HOST]))
+            except ValueError:
+                return self.async_show_form(
+                    step_id="user",
+                    data_schema=STEP_USER_SCHEMA,
+                    errors={CONF_HOST: "invalid_ip"},
+                )
+
+            try:
+                device_id = normalize_device_id(str(user_input[CONF_DEVICE_ID]))
+            except ValueError:
+                return self.async_show_form(
+                    step_id="user",
+                    data_schema=STEP_USER_SCHEMA,
+                    errors={CONF_DEVICE_ID: "invalid_device_id"},
+                )
+
+            try:
+                port = int(user_input.get(CONF_PORT, DEFAULT_PORT))
+                if not 1 <= port <= 65535:
+                    raise ValueError("Port must be between 1 and 65535")
+            except (TypeError, ValueError):
+                return self.async_show_form(
+                    step_id="user",
+                    data_schema=STEP_USER_SCHEMA,
+                    errors={CONF_PORT: "invalid_port"},
+                )
+
             api = DivoomTimesFrameApi(
                 async_get_clientsession(self.hass),
                 host,
@@ -87,18 +103,7 @@ class ConfigFlow(
                     },
                 )
 
-        schema = vol.Schema(
-            {
-                vol.Required(CONF_HOST): _validate_ip,
-                vol.Required(CONF_DEVICE_ID): _validate_device_id,
-                vol.Optional(CONF_PORT, default=DEFAULT_PORT): vol.All(
-                    vol.Coerce(int),
-                    vol.Range(min=1, max=65535),
-                ),
-            }
-        )
         return self.async_show_form(
             step_id="user",
-            data_schema=schema,
-            errors=errors,
+            data_schema=STEP_USER_SCHEMA,
         )

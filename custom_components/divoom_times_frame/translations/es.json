@@ -15,7 +15,10 @@
       "cannot_connect": "No se pudo conectar con el dispositivo en esa IP y puerto.",
       "device_id_mismatch": "El dispositivo no devolvió el DeviceID configurado. Se rechazó el alta.",
       "invalid_response": "El dispositivo devolvió una respuesta no válida y no se pudo verificar su identidad.",
-      "device_error": "El dispositivo rechazó la verificación de identidad."
+      "device_error": "El dispositivo rechazó la verificación de identidad.",
+      "invalid_ip": "Introduce una dirección IP válida.",
+      "invalid_device_id": "Introduce el DeviceID numérico de Divoom.",
+      "invalid_port": "Introduce un puerto entre 1 y 65535."
     },
     "abort": {
       "already_configured": "Este DeviceID de Divoom ya está configurado."
