@@ -81,6 +81,21 @@ class ConfigFlowContractTests(unittest.TestCase):
             )
         )
 
+        self.assertTrue(
+            any(
+                isinstance(node, ast.Call)
+                and isinstance(node.func, ast.Attribute)
+                and node.func.attr == "async_show_form"
+                and any(
+                    keyword.arg == "errors"
+                    and isinstance(keyword.value, ast.Name)
+                    and keyword.value.id == "errors"
+                    for keyword in node.keywords
+                )
+                for node in ast.walk(user_step)
+            )
+        )
+
     def test_form_validation_errors_have_translations(self) -> None:
         expected_errors = {
             "invalid_ip",

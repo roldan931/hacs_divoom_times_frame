@@ -59,6 +59,16 @@ Durante el alta, Home Assistant solicita:
 - **DeviceID** numérico del dispositivo Divoom.
 - **Puerto**, opcional; si se deja vacío se utiliza `9000`.
 
+### ¿Dónde encuentro el DeviceID?
+
+Conecta el teléfono o el equipo a la misma red local que el Times Frame y consulta el servicio Divoom **ReturnSameLANDevice** con una solicitud `POST`:
+
+```text
+https://app.divoom-gz.com/Device/ReturnSameLANDevice
+```
+
+La respuesta contiene una lista `DeviceList`. Busca el registro cuyo `DevicePrivateIP` sea igual a la IP del Times Frame y copia el valor numérico de `DeviceId` en el formulario. Si la lista está vacía, verifica que la app Divoom ya configuró el marco y que el cliente que hace la consulta está en la misma red. No uses el `DeviceId` de otro dispositivo de la lista.
+
 La integración consulta `Channel/GetClockInfo` en la IP indicada y compara el `DeviceId` que devuelve el dispositivo con el valor configurado. Solo termina el alta cuando coinciden. Si el marco no responde, no informa un DeviceID o el ID es distinto, Home Assistant rechaza la configuración. La identidad también se comprueba al leer el estado y antes de enviar controles.
 
 El DeviceID se conserva como identificador estable del dispositivo en Home Assistant y podrá servir para futuras funciones relacionadas con Divoom Cloud. La versión actual usa solamente la API local: introducir el DeviceID no inicia sesión en la nube ni autentica solicitudes cloud.

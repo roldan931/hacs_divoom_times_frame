@@ -3,7 +3,7 @@
     "step": {
       "user": {
         "title": "Connect to your Times Frame",
-        "description": "Enter the frame's IP address and Divoom DeviceID. The DeviceID returned by this IP must match before setup can continue.",
+        "description": "Enter the frame's IP address and Divoom DeviceID. To find it, send a POST request to https://app.divoom-gz.com/Device/ReturnSameLANDevice while connected to the same LAN, then match DevicePrivateIP to the frame's IP and copy DeviceId. Setup checks that the local frame reports the same ID.",
         "data": {
           "host": "IP address",
           "device_id": "Divoom DeviceID",
@@ -13,7 +13,7 @@
     },
     "error": {
       "cannot_connect": "Could not connect to the device at that IP and port.",
-      "device_id_mismatch": "The responding device did not report the configured DeviceID. Setup was rejected.",
+      "device_id_mismatch": "The device did not return a DeviceID, or it does not match the configured ID. Check DeviceId and DevicePrivateIP in Divoom's same-LAN device list.",
       "invalid_response": "The device returned an invalid response and its identity could not be verified.",
       "device_error": "The device rejected the identity check.",
       "invalid_ip": "Enter a valid IP address.",
