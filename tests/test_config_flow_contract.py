@@ -72,29 +72,37 @@ class ConfigFlowContractTests(unittest.TestCase):
             if isinstance(node, ast.AsyncFunctionDef)
             and node.name == "async_step_user"
         )
-        self.assertTrue(
-            any(
-                isinstance(node, ast.AnnAssign)
-                and isinstance(node.target, ast.Name)
-                and node.target.id == "errors"
-                for node in ast.walk(user_step)
-            )
-        )
+        first_statement = user_step.body[0]
+        if (
+            isinstance(first_statement, ast.Expr)
+            and isinstance(first_statement.value, ast.Constant)
+            and isinstance(first_statement.value.value, str)
+        ):
+            first_statement = user_step.body[1]
+        self.assertIsInstance(first_statement, ast.AnnAssign)
+        self.assertIsInstance(first_statement.target, ast.Name)
+        self.assertEqual(first_statement.target.id, "errors")
 
+        form_calls = [
+            node
+            for node in ast.walk(user_step)
+            if isinstance(node, ast.Call)
+            and isinstance(node.func, ast.Attribute)
+            and node.func.attr == "async_show_form"
+        ]
+        self.assertTrue(form_calls)
         self.assertTrue(
             any(
-                isinstance(node, ast.Call)
-                and isinstance(node.func, ast.Attribute)
-                and node.func.attr == "async_show_form"
-                and any(
+                any(
                     keyword.arg == "errors"
                     and isinstance(keyword.value, ast.Name)
                     and keyword.value.id == "errors"
-                    for keyword in node.keywords
+                    for keyword in call.keywords
                 )
-                for node in ast.walk(user_step)
+                for call in form_calls
             )
         )
+
 
     def test_form_validation_errors_have_translations(self) -> None:
         expected_errors = {
