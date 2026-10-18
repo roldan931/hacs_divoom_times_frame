@@ -42,6 +42,7 @@ class ConfigFlow(
     ) -> FlowResult:
         """Ask for the device's IP, DeviceID, and optional port."""
         if user_input is not None:
+            errors: dict[str, str] = {}
             try:
                 host = validate_ip_address(str(user_input[CONF_HOST]))
             except ValueError:

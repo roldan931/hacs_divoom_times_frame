@@ -61,6 +61,26 @@ class ConfigFlowContractTests(unittest.TestCase):
             )
         )
 
+        flow_class = next(
+            node
+            for node in module.body
+            if isinstance(node, ast.ClassDef) and node.name == "ConfigFlow"
+        )
+        user_step = next(
+            node
+            for node in flow_class.body
+            if isinstance(node, ast.AsyncFunctionDef)
+            and node.name == "async_step_user"
+        )
+        self.assertTrue(
+            any(
+                isinstance(node, ast.AnnAssign)
+                and isinstance(node.target, ast.Name)
+                and node.target.id == "errors"
+                for node in ast.walk(user_step)
+            )
+        )
+
     def test_form_validation_errors_have_translations(self) -> None:
         expected_errors = {
             "invalid_ip",
