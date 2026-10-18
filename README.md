@@ -1,0 +1,2 @@
+# hacs_divoom_times_frame
+hacs_divoom_times_frame integration
